@@ -1,0 +1,23 @@
+NGEN = dict(
+url_internal_staging = "https://staging.ngen.cert.unlp.edu.ar/api/v2/incidents/internals.json?apikey=<YOUR-API-KEY>",
+url_external_staging =  "https://staging.ngen.cert.unlp.edu.ar/api/v2/incidents/externals.json?apikey=<YOUR-API-KEY>",
+url_prod = "https://incidentes.cert.unlp.edu.ar/api/v1/incidents.json?apikey=<YOUR-API-KEY>",
+)
+
+SPAMPOT = dict(
+user = "<YOUR-SPAMPOT-USER>",
+password = "<YOUR-SPAMPOT-PASSWORD>",
+)
+
+MAILLOG = dict(
+name = "SpamPot",
+me = 'spampot@cert-feed.unlp.edu.ar',
+recipients_error = ['mdurante@cert.unlp.edu.ar'],
+recipients_log = ['mdurante@cert.unlp.edu.ar'],
+recipients = ['mdurante@cert.unlp.edu.ar','nmacia@cert.unlp.edu.ar'],
+subject = '[{0}]{1} Reporte {0}',
+body = 'Le enviamos un reporte automático. {0}\n\nCERT-UNLP',
+mail_server = '163.10.40.194',
+file_name = "{0}.txt",
+detail="",
+)
