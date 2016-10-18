@@ -4,14 +4,14 @@ url_external_staging =  "https://staging.ngen.cert.unlp.edu.ar/api/v2/incidents/
 url_prod = "https://incidentes.cert.unlp.edu.ar/api/v1/incidents.json?apikey=<YOUR-API-KEY>",
 )
 
-SPAMHAUS = dict(
-cert = "<YOUR-SPAMHAUS-USER>",
-key = "<YOUR-SPAMHAUS-KEY>",
+TEAMCYMRU = dict(
+user = "<YOUR-TEAMCYMRU-USER>",
+password = "<YOUR-TEAMCYMRU-PASSWORD>",
 )
 
 MAILLOG = dict(
-name = "SpamHaus",
-me = 'spamhaus@cert-feed.unlp.edu.ar',
+name = "TeamCymru",
+me = 'teamcymru@cert-feed.unlp.edu.ar',
 recipients_error = ['mdurante@cert.unlp.edu.ar'],
 recipients_log = ['mdurante@cert.unlp.edu.ar'],
 recipients = ['mdurante@cert.unlp.edu.ar','nmacia@cert.unlp.edu.ar'],

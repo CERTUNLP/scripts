@@ -11,7 +11,7 @@ key = "<YOUR-SPAMHAUS-KEY>",
 
 MAILLOG = dict(
 name = "SpamHaus-Botnet",
-me = 'spampot@cert-feed.unlp.edu.ar',
+me = 'spamhaus_botnet@cert-feed.unlp.edu.ar',
 recipients_error = ['mdurante@cert.unlp.edu.ar'],
 recipients_log = ['mdurante@cert.unlp.edu.ar'],
 recipients = ['mdurante@cert.unlp.edu.ar','nmacia@cert.unlp.edu.ar'],
