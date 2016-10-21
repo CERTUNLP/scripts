@@ -17,13 +17,13 @@ from pprint import pprint
 class MailLog:
     def __init__(self,
                 name = 'ScriptReport',
-                me = 'spamhaus@cert-feed.unlp.edu.ar',
-                recipients_error = ['mdurante@cert.unlp.edu.ar'],
-                recipients_log = ['mdurante@cert.unlp.edu.ar'],
-                recipients = ['mdurante@cert.unlp.edu.ar','nmacia@cert.unlp.edu.ar'],
+                me = 'scriptreport@cert-feed.edu.ar',
+                recipients_error = ['you@mail.edu.ar'],
+                recipients_log = ['you@mail.edu.ar'],
+                recipients = ['you@mail.edu.ar','another@mail.edu.ar'],
                 subject = '[{0}]{1} Reporte {0}',
-                body = 'Le enviamos un reporte automático. {0}\n\nCERT-UNLP',
-                mail_server = '163.10.40.194',
+                body = 'Le enviamos un reporte automático. {0}\n\nCERT',
+                mail_server = '1.2.3.4',
                 file_name = "{0}.txt",
                 detail=""):
         self.name = name

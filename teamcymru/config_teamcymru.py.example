@@ -1,7 +1,7 @@
 NGEN = dict(
-url_internal_staging = "https://staging.ngen.cert.unlp.edu.ar/api/v2/incidents/internals.json?apikey=<YOUR-API-KEY>",
-url_external_staging =  "https://staging.ngen.cert.unlp.edu.ar/api/v2/incidents/externals.json?apikey=<YOUR-API-KEY>",
-url_prod = "https://incidentes.cert.unlp.edu.ar/api/v1/incidents.json?apikey=<YOUR-API-KEY>",
+url_internal_staging = "https://<NGEN-URL>/api/v2/incidents/internals.json?apikey=<YOUR-API-KEY>",
+url_external_staging =  "https://<NGEN-URL>/api/v2/incidents/externals.json?apikey=<YOUR-API-KEY>",
+url_prod = "https://<NGEN-URL>/api/v1/incidents.json?apikey=<YOUR-API-KEY>",
 )
 
 TEAMCYMRU = dict(
@@ -10,14 +10,14 @@ password = "<YOUR-TEAMCYMRU-PASSWORD>",
 )
 
 MAILLOG = dict(
-name = "TeamCymru",
-me = 'teamcymru@cert-feed.unlp.edu.ar',
-recipients_error = ['mdurante@cert.unlp.edu.ar'],
-recipients_log = ['mdurante@cert.unlp.edu.ar'],
-recipients = ['mdurante@cert.unlp.edu.ar','nmacia@cert.unlp.edu.ar'],
+name = "SpamHaus",
+me = 'spamhaus@cert-feed.edu.ar',
+recipients_error = ['you@mail.edu.ar'],
+recipients_log = ['you@mail.edu.ar'],
+recipients = ['you@mail.edu.ar','another@mail.edu.ar'],
 subject = '[{0}]{1} Reporte {0}',
-body = 'Le enviamos un reporte automático. {0}\n\nCERT-UNLP',
-mail_server = '163.10.40.194',
+body = 'Le enviamos un reporte automático. {0}\n\nCERT',
+mail_server = '1.2.3.4',
 file_name = "{0}.txt",
 detail="",
 )
