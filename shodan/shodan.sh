@@ -39,7 +39,7 @@ function process_html
 {
 	page=$1
 	curl -s -A "$user_agent" -X GET "$filters_url&page=$page" --cookie $cookie_path --cookie-jar $cookie_path -o $temporal_file
-	cat $temporal_file | awk 'match($0, class="ip")' | grep -E -o $regex_ip | uniq
+	cat $temporal_file | awk 'match($0, /class="ip"/)' | grep -E -o $regex_ip | uniq
 }
 
 function delete_temporal_files
@@ -55,7 +55,7 @@ is_session_invalid=$( cat $temporal_file | awk 'match($0, /Invalid username or p
 
 if [ ${#is_session_invalid} -ne 0 ]; then
 	delete_temporal_files
-	echo -e "${red}Invalid username or password.${NC}"
+	echo -e "${red}Invalid username or password.${nc}"
 	exit 1
 fi
 
