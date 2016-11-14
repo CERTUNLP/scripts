@@ -16,6 +16,12 @@ query=$1
 login_url="https://account.shodan.io/login"
 filters_url="https://www.shodan.io/search?query=$query"
 
+# Logging file:
+logging_dir="$HOME/.shodan/logs"
+logging_file="$logging_dir/shodan.log"
+
+[ -d $logging_dir ] || mkdir -p $logging_dir
+
 # Max pages: if you have a free account, then the maximum viewable pages are five.
 # In other case, the maximum viewable pages can be manually modified.
 maximum_pages=5
@@ -32,20 +38,22 @@ red='\033[0;31m'
 NC='\033[0m' # No Color
 
 cookie_path=$( mktemp /tmp/cookie-XXXXXXXXXXXX)
-temporal_file=$( mktemp /tmp/XXXXXXXXXXXX.html )
+temporal_file=$( mktemp /tmp/temporalXXXXXXXXXXXX.html )
+results_file=$( mktemp /tmp/results-XXXXXXXXXXXX.txt )
 
 # Processing html... Args: current page of search.
 function process_html
 {
 	page=$1
 	curl -s -A "$user_agent" -X GET "$filters_url&page=$page" --cookie $cookie_path --cookie-jar $cookie_path -o $temporal_file
-	cat $temporal_file | awk 'match($0, /class="ip"/)' | grep -E -o $regex_ip | uniq
+	cat $temporal_file | awk 'match($0, /class="ip"/)' | grep -E -o $regex_ip | uniq >> $results_file
 }
 
 function delete_temporal_files
 {
 	rm $temporal_file
 	rm $cookie_path
+	rm $results_file
 }
 
 # Login.
@@ -66,6 +74,8 @@ curl -s -A "$user_agent" -X GET "$filters_url&page=1" --cookie $cookie_path --co
 not_found_msg=$( cat $temporal_file | awk 'match($0, /No results found/)' )
 if [ ${#not_found_msg} -ne 0 ]; then
 	delete_temporal_files
+	# Logging data:
+	echo "Query: '$query', Extracted: 0, Total: 0" >> $logging_file
 	echo -e "${red}No results found.${NC}"
 	exit 2
 fi
@@ -81,6 +91,9 @@ fi
 max_pages=$maximum_pages
 current_page=1
 
+# Getting total results from Shodan:
+total_shodan=$( cat $temporal_file | awk 'match($0, /Total results: /)' | sed "s/[^0-9]//g" )
+
 # Process first page.
 process_html $current_page
 
@@ -92,6 +105,14 @@ while [ ${#next} -ne 0 ] && [ $current_page -le $max_pages ]; do
 	process_html $current_page
 	next=$( cat $temporal_file | awk 'match($0, /Next/)')
 done
+
+# Total to logging:
+total=$( cat $results_file | wc -l )
+# Logging again:
+echo "Query: '$query', Extracted: $total, Total: $total_shodan" >> $logging_file
+
+# Showing data:
+cat $results_file
 
 delete_temporal_files
 
