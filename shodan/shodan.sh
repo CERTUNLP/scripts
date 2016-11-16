@@ -63,6 +63,7 @@ is_session_invalid=$( cat $temporal_file | awk 'match($0, /Invalid username or p
 
 if [ ${#is_session_invalid} -ne 0 ]; then
 	delete_temporal_files
+	echo "Query: '$query', Invalid username or password." >> $logging_file
 	echo -e "${red}Invalid username or password.${nc}"
 	exit 1
 fi
@@ -84,8 +85,18 @@ fi
 invalid_query=$( cat $temporal_file | awk 'match($0, /Invalid search query/)' )
 if [ ${#invalid_query} -ne 0 ]; then
 	delete_temporal_files
+	echo "Query: '$query', Invalid search query." >> $logging_file
 	echo "${red}Invalid search query.${NC}"
 	exit 3
+fi
+
+# When internal error in server:
+internal_error=$( cat $temporal_file | awk 'match($0, /Web server is returning an unknown error/)' )
+if [ ${#internal_error} -ne 0 ]; then
+	delete_temporal_files
+	echo "Query: '$query', Internal error server." >> $logging_file
+	echo "${red}Error 520. Try again in few minutes.${NC}"
+	exit 4
 fi
 
 max_pages=$maximum_pages
