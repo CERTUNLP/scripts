@@ -9,6 +9,8 @@
 # with this source code in the file LICENSE.
 #
 
+source $(dirname $BASH_SOURCE)/.env
+
 # Enter the query between quotes.
 query=$1
 
@@ -17,7 +19,6 @@ login_url="https://account.shodan.io/login"
 filters_url="https://www.shodan.io/search?query=$query"
 
 # Logging file:
-logging_dir="$HOME/.shodan/logs"
 logging_file="$logging_dir/shodan.log"
 
 [ -d $logging_dir ] || mkdir -p $logging_dir
@@ -25,10 +26,6 @@ logging_file="$logging_dir/shodan.log"
 # Max pages: if you have a free account, then the maximum viewable pages are five.
 # In other case, the maximum viewable pages can be manually modified.
 maximum_pages=5
-
-# Info for cookies and login. Edit username and password variables.
-username="<USERNAME>"
-password="<PASSWORD>"
 
 data="username=$username&password=$password&grant_type=password&continue=https://www.shodan.io/"
 user_agent='Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:49.0) Gecko/20100101 Firefox/49.0'
