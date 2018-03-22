@@ -1,0 +1,5 @@
+# Logging dir:
+logging_dir=$HOME/.shodan/logs
+# login
+username=
+password=
