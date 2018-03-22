@@ -18,9 +18,10 @@ import config_spampot
 
 send_external = False
 
-url_internal_staging = config_spampot.NGEN["url_internal_staging"]
-url_external_staging = config_spampot.NGEN["url_external_staging"]
-url_prod = config_spampot.NGEN["url_prod"]
+ngen_url_staging_internal = config_spampot.NGEN["url_internal_staging"]
+ngen_url_staging_external = config_spampot.NGEN["url_external_staging"]
+ngen_url_prod_internal = config_spampot.NGEN["ngen_url_prod_internal"]
+ngen_url_prod_external = config_spampot.NGEN["ngen_url_prod_external"]
 
 user = config_spampot.SPAMPOT["user"]
 password = config_spampot.SPAMPOT["password"]
@@ -43,8 +44,10 @@ def process_file():
     # this gets the page text
     data = res.read().decode('utf-8', errors='ignore').split('\n')
     #print(data)
-    if data[1] != '#date;ip;cidr;asn;cc;emails;rcpts;conns;http;smtp;socks4;socks4a;socks5':
-        raise Exception('El formato de la pagina es distinto al original')
+    original = '#date;ip;cidr;asn;cc;emails;rcpts;conns;http;smtp;socks4;socks4a;socks5'
+    new = data[1]
+    if new != original:
+        raise Exception('{0}\nOriginal: {1}\nNuevo: {2}'.format("El formato de la pagina es distinto al original",original,new))
 
     reports = data[2:-1]
     report_header = data[:2]
@@ -69,13 +72,13 @@ def process_lines(header,lines):
         files = {'evidence_file': ("evidence.txt", ','.join(header)+"\n"+evidence, 'text/plain', {'Expires': '0'})}
         if isUNLP(line[0]):
             #log_info.append(str(evidence))
-            response = requests.post(url_prod, data=report, headers=headers, files=files, verify=False)
+            response = requests.post(ngen_url_prod_internal, data=report, headers=headers, files=files, verify=False)
             if response.status_code != 201:
                 error = True
                 log_info.append(str(response)+str(response.text)+str(report))
                 log_info.append(str(files))
         elif send_external:
-            response = requests.post(url_external_staging, data=report, headers=headers, files=files, verify=False)
+            response = requests.post(ngen_url_prod_external, data=report, headers=headers, files=files, verify=False)
             if response.status_code != 201:
                 error = True
                 log_info.append('\n'+str(response)+'\n'+str(response.text)+'\n'+str(report)+'\n')

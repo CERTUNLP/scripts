@@ -41,7 +41,7 @@ def process_file():
     c.request('GET', resource, headers=headers)
     res = c.getresponse()
     if res.code == 404:
-        return None,None
+        raise Exception('404 en teamcymru. Posiblemente no hay nuevo contenido de feed.')
     # at this point you could check the status etc
     # this gets the page text
     data = res.read().decode('utf-8', errors='ignore').split('\n')

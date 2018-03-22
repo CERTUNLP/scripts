@@ -1,7 +1,8 @@
 NGEN = dict(
 url_internal_staging = "https://<NGEN-URL>/api/v2/incidents/internals.json?apikey=<YOUR-API-KEY>",
-url_external_staging =  "https://<NGEN-URL>/api/v2/incidents/externals.json?apikey=<YOUR-API-KEY>",
-url_prod = "https://<NGEN-URL>/api/v1/incidents.json?apikey=<YOUR-API-KEY>",
+url_external_staging = "https://<NGEN-URL>/api/v2/incidents/externals.json?apikey=<YOUR-API-KEY>",
+ngen_url_prod_internal = "https://<NGEN-URL>/api/v2/incidents/internals.json?apikey=<YOUR-API-KEY>",
+ngen_url_prod_external = "https://<NGEN-URL>/api/v2/incidents/externals.json?apikey=<YOUR-API-KEY>",
 )
 
 SPAMHAUS = dict(
