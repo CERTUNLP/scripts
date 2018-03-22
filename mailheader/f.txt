@@ -1,0 +1,121 @@
+Return-Path: <nmacia@cert.unlp.edu.ar>
+X-Original-To: mdurante@cert.unlp.edu.ar
+Delivered-To: mdurante@cert.unlp.edu.ar
+Received: from [163.10.20.225] (unknown [163.10.20.225])
+	by mail.cert.unlp.edu.ar (Postfix) with ESMTPSA id 8A6CB280E7
+	for <mdurante@cert.unlp.edu.ar>; Fri, 24 Nov 2017 15:27:56 -0300 (-03)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=cert.unlp.edu.ar;
+	s=mail; t=1511548076;
+	bh=aS65EhLVJu/kkwokbJXnigSdsfzs931tPKzYzcCeyag=;
+	h=To:From:Subject:Date:From;
+	b=G5Pi1XN0xADeT47bvjlugAyj7hFO0b3WeL+qNmMnFkfKlNEh1yIBzos9w+VtV+fFS
+	 I+WTAvAO0Lp+t1nk3Wdth5/0J6pVlkctczbdaX3jW8uhIijP9cilSFrVrIEhpelxKN
+	 PtHIJrFff4kYRTHh1b9YfvC2hIQAjuSFsRvHukIFbhitifWt7Fs74SYM3g/U1tldES
+	 9jnXIs2MAi6bTSNFrkLiFuyuayU5aj2BQ4h1AWiWA1x0+VIyXoBgVVXsyNNPtv+VZe
+	 /BBPoIaLj68aveIWyvnWNG2a1K4OrkUck+ND4jwKzzAZL/0XodbFayMTkD7bLEONZA
+	 B3p7/H59jHoaA==
+To: Mateo Durante <mdurante@cert.unlp.edu.ar>
+From: =?UTF-8?Q?Nicol=c3=a1s_Macia?= <nmacia@cert.unlp.edu.ar>
+Subject: whois
+Message-ID: <0c01e12a-8b73-0877-be23-a29f1872399f@cert.unlp.edu.ar>
+Date: Fri, 24 Nov 2017 15:27:56 -0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
+ Thunderbird/52.4.0
+MIME-Version: 1.0
+Content-Type: multipart/mixed;
+ boundary="------------7E2FD83F4F01FB0DEB15C782"
+Content-Language: en-US
+
+This is a multi-part message in MIME format.
+--------------7E2FD83F4F01FB0DEB15C782
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 7bit
+
+
+
+--------------7E2FD83F4F01FB0DEB15C782
+Content-Type: text/x-python;
+ name="rdap_query.py"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename="rdap_query.py"
+
+#!/bin/python3
+#
+# (c) CERT UNLP <support@cert.unlp.edu.ar>
+#
+# This source file is subject to the GPL v3.0 license that is bundled
+# with this source code in the file LICENSE.
+#
+# Author: Mateo Durante <mdurante@cert.unlp.edu.ar>
+# Adapted by: Nicolas Macia <nmacia@cert.unlp.edu.ar>
+#
+import sys
+import json
+import requests
+
+class RDAP:
+    arin_rdap_url = 'https://rdap.arin.net/registry/ip/{0}'
+
+    def get_value(self, entry):
+        if entry[0] == 'adr':
+            if list == type(entry[-1]):
+                value = ', '.join(filter(None,entry[-1]))
+            else:
+                value = entry[-1]
+        else:
+            value = entry[-1]
+        return value
+
+    def add_role_values(self, entity, abuse_data, role):
+        if role in entity['roles']:
+            abuse_data[role] = {}
+            try:
+                for entry in entity['vcardArray'][1]:
+                    abuse_data[role][entry[0]] = self.get_value(entry)
+            except KeyError:
+                abuse_data[role] = None
+
+
+    def get_ip_abuse_emails(self, host_ip,
+                            roles=['abuse','noc','technical','registrant']):
+        # ARIN redirect you to the correct rdap service.
+        session = requests.Session()
+        response = session.get(self.arin_rdap_url.format(host_ip))
+
+        if response.status_code != 200:
+            return ['Error connecting arin rdap.']
+
+        abuse_data = dict()
+        entities = json.loads(response.text)['entities']
+        while entities:
+            entity = entities.pop(0)
+            entities += entity['entities'] if 'entities' in entity else []
+            if 'roles' in entity:
+                for rol in roles:
+                    self.add_role_values(entity, abuse_data, rol)
+        return abuse_data
+
+
+if __name__ == "__main__":
+
+    if (len(sys.argv) != 2):
+        print 'Use: '+sys.argv[0]+' <IP>'
+
+    rdap = RDAP()
+
+    print "\nABUSE Contacts"
+    print "--------------"
+    out = rdap.get_ip_abuse_emails(sys.argv[1],roles=['abuse'])
+    print json.dumps(out, sort_keys=True, indent=4, separators=(',', ': '))
+
+    print "\nTECHNICAL Contacts"
+    print "------------------"
+    out = rdap.get_ip_abuse_emails(sys.argv[1],roles=['noc','technical'])
+    print json.dumps(out, sort_keys=True, indent=4, separators=(',', ': '))
+
+
+
+
+--------------7E2FD83F4F01FB0DEB15C782--
+
