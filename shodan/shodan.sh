@@ -27,8 +27,7 @@ logging_file="$logging_dir/shodan.log"
 # In other case, the maximum viewable pages can be manually modified.
 maximum_pages=5
 
-data="username=$username&password=$password&grant_type=password&continue=https://www.shodan.io/"
-user_agent='Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:49.0) Gecko/20100101 Firefox/49.0'
+user_agent='Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.162 Safari/537.36'
 
 regex_ip='(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)'
 red='\033[0;31m'
@@ -52,6 +51,12 @@ function delete_temporal_files
 	rm $cookie_path
 	rm $results_file
 }
+
+# Getting CSRF token
+token=$(curl -s -A "$user_agent" https://account.shodan.io/login --cookie $cookie_path --cookie-jar $cookie_path | awk -F 'value' '/csrf_token/ {print $2}' | cut -d"'" -f2 2> /dev/null )
+token=$(echo $token | awk '{print $1;}')
+
+data="username=$username&password=$password&grant_type=password&continue=https%3A%2F%2Faccount.shodan.io%2F%3Flanguage%3Des%26language%3Des&csrf_token=$token&login_submit=Log+in"
 
 # Login.
 curl -s -L -A "$user_agent" -X POST $login_url --data $data --cookie $cookie_path --cookie-jar $cookie_path -o $temporal_file
