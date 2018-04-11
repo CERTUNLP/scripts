@@ -17,6 +17,7 @@ query=$1
 # URLs
 login_url="https://account.shodan.io/login"
 filters_url="https://www.shodan.io/search?query=$query"
+total_query="https://www.shodan.io/search/_summary?query=$query"
 
 # Logging file:
 logging_file="$logging_dir/shodan.log"
@@ -105,7 +106,8 @@ max_pages=$maximum_pages
 current_page=1
 
 # Getting total results from Shodan:
-total_shodan=$( cat $temporal_file | awk 'match($0, /Total results: /)' | sed "s/[^0-9]//g" )
+#total_shodan=$( cat $temporal_file | awk 'match($0, /Total results: /)' | sed "s/[^0-9]//g" )
+total_shodan=$(curl -s "$total_query" | grep "class=\"bignumber\">" | awk -F[\>\<] '{print $3}')
 
 # Process first page.
 process_html $current_page
