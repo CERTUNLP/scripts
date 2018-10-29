@@ -55,7 +55,7 @@ function delete_temporal_files
 
 # Getting CSRF token
 token=$(curl -s -A "$user_agent" https://account.shodan.io/login --cookie $cookie_path --cookie-jar $cookie_path | awk -F 'value' '/csrf_token/ {print $2}' | cut -d"'" -f2 2> /dev/null )
-token=$(echo $token | awk '{print $1;}')
+token=$(echo $token | awk '{print $1;}' | tr -d "=" | tr -d "\"")
 
 data="username=$username&password=$password&grant_type=password&continue=https%3A%2F%2Faccount.shodan.io%2F%3Flanguage%3Des%26language%3Des&csrf_token=$token&login_submit=Log+in"
 
